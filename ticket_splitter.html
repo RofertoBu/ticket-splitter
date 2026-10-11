@@ -64,13 +64,28 @@
 
     /* ── Header ── */
     header {
-      text-align: center;
+      width: 100%;
+      max-width: 680px;
+      position: relative;
       margin-bottom: 24px;
       padding-top: 8px;
     }
 
+    .header-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+    }
+
+    .header-titles {
+      text-align: center;
+      padding: 0 44px;
+    }
+
     header h1 {
-      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      font-size: clamp(1.6rem, 5.5vw, 2.4rem);
       font-weight: 800;
       background: linear-gradient(135deg, var(--accent2), #e879f9);
       -webkit-background-clip: text;
@@ -82,7 +97,51 @@
     header p {
       color: var(--muted);
       margin-top: 4px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
+    }
+
+    .header-settings-btn {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+      color: var(--text);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    }
+
+    .header-settings-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-50%) rotate(30deg) scale(1.08);
+    }
+
+    .header-settings-btn:active {
+      transform: translateY(-50%) scale(0.92);
+    }
+
+    .settings-btn-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ef4444;
+      border: 2px solid var(--bg);
+    }
+
+    .settings-btn-badge.configured {
+      background: #2ecc71;
     }
 
     /* ── Step indicator ── */
@@ -1395,6 +1454,96 @@
       box-shadow: 0 6px 20px rgba(239, 68, 68, 0.55);
     }
 
+    .settings-modal-card {
+      background: #151829;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      max-width: 460px;
+      width: 100%;
+      text-align: left;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      animation: scaleUp 0.2s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+
+    .btn-close-modal:hover {
+      color: var(--text);
+    }
+
+    .api-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      gap: 12px;
+    }
+
+    .api-status-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .api-status-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .api-status-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .api-status-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-config-pill {
+      background: rgba(124, 109, 250, 0.12);
+      border: 1px solid rgba(124, 109, 250, 0.35);
+      color: var(--accent2);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .btn-config-pill:hover {
+      background: rgba(124, 109, 250, 0.25);
+    }
+
     /* ── Color palette for participants ── */
     .color-0 { background: rgba(124, 109, 250, 0.25); color: #a78bfa; }
     .color-1 { background: rgba(52, 211, 153, 0.2); color: #34d399; }
@@ -1450,8 +1599,16 @@
 <body>
 
   <header>
-    <h1>🧾 Ticket Splitter</h1>
-    <p>Divide tickets y cuentas de restaurante con IA</p>
+    <div class="header-content">
+      <div class="header-titles">
+        <h1>🧾 Ticket Splitter</h1>
+        <p>Divide tickets y cuentas de restaurante con IA</p>
+      </div>
+      <button type="button" class="header-settings-btn" id="btn-open-settings" title="Ajustes de IA y Claves">
+        <span>⚙️</span>
+        <span class="settings-btn-badge" id="settings-badge"></span>
+      </button>
+    </div>
   </header>
 
   <div class="steps">
@@ -1497,44 +1654,17 @@
       </div>
     </div>
 
-    <label class="field-label" for="api-key-input">Gemini API Key</label>
-    <div class="api-key-wrap">
-      <input type="password" id="api-key-input" placeholder="Pega tu clave AIza… aquí" value="" />
-      <button type="button" class="btn-toggle-eye" id="btn-toggle-key" title="Mostrar/Ocultar clave">👁️</button>
-    </div>
-    <p style="font-size:0.75rem;color:var(--muted);margin-top:5px;">🔒 Se guarda únicamente en la memoria de tu dispositivo (localStorage). Nadie más tiene acceso.</p>
-
-    <!-- Selector de Modelo y Cascada de Cuotas -->
-    <div style="margin-top: 14px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-        <label class="field-label" for="model-select" style="margin-top:0; margin-bottom:0;">Modelo de Inteligencia Artificial</label>
-        <span style="font-size:0.7rem; padding:2px 8px; border-radius:10px; background:rgba(46,204,113,0.15); color:#2ecc71; font-weight:600;">🔄 Cascada activa</span>
-      </div>
-      <select id="model-select" class="form-select">
-        <option value="auto">⚡ Automático (2.5 Flash ➔ 2.0 ➔ 1.5 si se agota)</option>
-        <option value="gemini-2.5-flash">🌟 Gemini 2.5 Flash (Máxima precisión / 20 req/día)</option>
-        <option value="gemini-2.0-flash">🚀 Gemini 2.0 Flash (Rápido y cuota independiente)</option>
-        <option value="gemini-1.5-flash">📦 Gemini 1.5 Flash (Alta disponibilidad / Respaldo)</option>
-        <option value="gemini-1.5-flash-8b">🍃 Gemini 1.5 Flash 8B (Ultraligero)</option>
-      </select>
-      <p style="font-size:0.74rem;color:var(--muted);margin-top:5px;line-height:1.35;">
-        💡 Si se te agotan las 20 peticiones diarias de 2.5 Flash, el modo <strong>Automático</strong> pasa al instante a Gemini 2.0 o 1.5 para que no te quedes sin escanear.
-      </p>
-    </div>
-
-    <!-- Opciones avanzadas (clave de reserva) -->
-    <details class="adv-details" style="margin-top:12px;">
-      <summary>⚙️ Opciones avanzadas (2ª Clave de respaldo)</summary>
-      <div style="padding-top:10px;">
-        <label class="field-label" for="api-key-backup-input" style="margin-top:0;">Clave API de Reserva (Opcional)</label>
-        <div class="api-key-wrap">
-          <input type="password" id="api-key-backup-input" placeholder="Segunda clave de otro proyecto de AI Studio…" value="" />
+    <!-- Estado de la clave API & acceso a Ajustes -->
+    <div class="api-status-bar" id="api-status-bar">
+      <div class="api-status-info">
+        <span class="api-status-icon" id="api-status-icon">⚡</span>
+        <div>
+          <div class="api-status-title" id="api-status-title">Modelo: Automático</div>
+          <div class="api-status-sub" id="api-status-sub">Gemini API Key configurada</div>
         </div>
-        <p style="font-size:0.73rem;color:var(--muted);margin-top:5px;line-height:1.35;">
-          Si creas otro proyecto gratuito en Google AI Studio, pega aquí su clave. La app la usará si se agotan todas las cuotas de la primera.
-        </p>
       </div>
-    </details>
+      <button type="button" class="btn-config-pill" id="btn-open-settings-step0">Ajustes ⚙️</button>
+    </div>
 
     <div class="error-banner" id="upload-error"></div>
 
@@ -1703,6 +1833,67 @@
     </div>
   </div>
 
+  <!-- ══════════════ MODAL: Settings (IA & Claves) ══════════════ -->
+  <div class="modal-overlay hidden" id="settings-modal">
+    <div class="settings-modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.4rem;">⚙️</span>
+          <span style="font-size:1.2rem; font-weight:800; color:var(--text);">Ajustes de IA</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-settings" title="Cerrar">✕</button>
+      </div>
+      <p style="font-size:0.82rem; color:var(--muted); margin-bottom:18px; line-height:1.4;">
+        Configura tu clave de Gemini y el modelo de inteligencia artificial para procesar tus tickets.
+      </p>
+
+      <!-- Clave Principal -->
+      <label class="field-label" for="api-key-input" style="margin-top:0;">Gemini API Key</label>
+      <div class="api-key-wrap">
+        <input type="password" id="api-key-input" placeholder="Pega tu clave AIza… aquí" value="" />
+        <button type="button" class="btn-toggle-eye" id="btn-toggle-key" title="Mostrar/Ocultar clave">👁️</button>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px; margin-bottom:16px;">
+        <span style="font-size:0.73rem; color:var(--muted);">🔒 Guardada solo en tu dispositivo</span>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size:0.73rem; color:var(--accent2); text-decoration:underline;">Conseguir clave gratis ↗</a>
+      </div>
+
+      <!-- Selector de Modelo -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+        <label class="field-label" for="model-select" style="margin-top:0; margin-bottom:0;">Modelo de IA</label>
+        <span style="font-size:0.7rem; padding:2px 8px; border-radius:10px; background:rgba(46,204,113,0.15); color:#2ecc71; font-weight:600;">🔄 Cascada activa</span>
+      </div>
+      <select id="model-select" class="form-select">
+        <option value="auto">⚡ Automático (2.5 Flash ➔ 2.0 ➔ 1.5 si se agota)</option>
+        <option value="gemini-2.5-flash">🌟 Gemini 2.5 Flash (Máxima precisión / 20 req/día)</option>
+        <option value="gemini-2.0-flash">🚀 Gemini 2.0 Flash (Rápido y cuota independiente)</option>
+        <option value="gemini-1.5-flash">📦 Gemini 1.5 Flash (Alta disponibilidad / Respaldo)</option>
+        <option value="gemini-1.5-flash-8b">🍃 Gemini 1.5 Flash 8B (Ultraligero)</option>
+      </select>
+      <p style="font-size:0.74rem; color:var(--muted); margin-top:5px; margin-bottom:16px; line-height:1.35;">
+        💡 El modo <strong>Automático</strong> pasa solo a Gemini 2.0 o 1.5 si se acaban las 20 peticiones diarias de 2.5.
+      </p>
+
+      <!-- Clave de Reserva Opcional -->
+      <details class="adv-details" style="margin-bottom:20px;">
+        <summary>➕ 2ª Clave API de Reserva (Opcional)</summary>
+        <div style="padding-top:10px;">
+          <label class="field-label" for="api-key-backup-input" style="margin-top:0;">Clave de Reserva</label>
+          <div class="api-key-wrap">
+            <input type="password" id="api-key-backup-input" placeholder="Segunda clave de otro proyecto de AI Studio…" value="" />
+          </div>
+          <p style="font-size:0.73rem; color:var(--muted); margin-top:5px; line-height:1.35;">
+            Si creas otro proyecto gratuito en Google AI Studio, pega aquí su clave. Se usará si se agotan todas las cuotas de la primera.
+          </p>
+        </div>
+      </details>
+
+      <button type="button" class="btn btn-primary" id="btn-save-settings" style="width:100%;">
+        Guardar y Cerrar
+      </button>
+    </div>
+  </div>
+
   <script>
     // ─── PWA Service Worker Registration ─────────────────────────────────────
     if ('serviceWorker' in navigator) {
@@ -1795,6 +1986,7 @@
     }
     $('api-key-input').addEventListener('input', e => {
       localStorage.setItem('gemini_api_key', e.target.value.trim());
+      updateSettingsStatusUI();
     });
     $('btn-toggle-key').addEventListener('click', () => {
       const input = $('api-key-input');
@@ -1814,6 +2006,7 @@
       modelSelect.value = savedModel;
       modelSelect.addEventListener('change', e => {
         localStorage.setItem('gemini_model', e.target.value);
+        updateSettingsStatusUI();
       });
     }
 
@@ -1827,6 +2020,69 @@
         localStorage.setItem('gemini_api_key_backup', e.target.value.trim());
       });
     }
+
+    // ─── Settings Modal Handlers ──────────────────────────────────────────────
+    function openSettingsModal() {
+      vibrate();
+      $('settings-modal').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      vibrate();
+      $('settings-modal').classList.add('hidden');
+      updateSettingsStatusUI();
+    }
+
+    $('btn-open-settings').addEventListener('click', openSettingsModal);
+    $('btn-open-settings-step0').addEventListener('click', openSettingsModal);
+    $('btn-close-settings').addEventListener('click', closeSettingsModal);
+    $('btn-save-settings').addEventListener('click', () => {
+      const key = $('api-key-input').value.trim();
+      localStorage.setItem('gemini_api_key', key);
+      const model = $('model-select').value;
+      localStorage.setItem('gemini_model', model);
+      const backupKey = $('api-key-backup-input').value.trim();
+      localStorage.setItem('gemini_api_key_backup', backupKey);
+      closeSettingsModal();
+    });
+
+    $('settings-modal').addEventListener('click', e => {
+      if (e.target === $('settings-modal')) closeSettingsModal();
+    });
+
+    function updateSettingsStatusUI() {
+      const key = (localStorage.getItem('gemini_api_key') || $('api-key-input')?.value || '').trim();
+      const model = localStorage.getItem('gemini_model') || 'auto';
+      const badge = $('settings-badge');
+      const title = $('api-status-title');
+      const sub = $('api-status-sub');
+      const icon = $('api-status-icon');
+
+      const modelNames = {
+        'auto': 'Automático (Cascada)',
+        'gemini-2.5-flash': 'Gemini 2.5 Flash',
+        'gemini-2.0-flash': 'Gemini 2.0 Flash',
+        'gemini-1.5-flash': 'Gemini 1.5 Flash',
+        'gemini-1.5-flash-8b': 'Gemini 1.5 Flash 8B'
+      };
+
+      const modelLabel = modelNames[model] || model;
+
+      if (key) {
+        if (badge) badge.className = 'settings-btn-badge configured';
+        if (title) title.textContent = `Modelo: ${modelLabel}`;
+        if (sub) sub.textContent = 'API Key configurada y lista';
+        if (icon) icon.textContent = '⚡';
+      } else {
+        if (badge) badge.className = 'settings-btn-badge';
+        if (title) title.textContent = 'Sin clave API configurada';
+        if (sub) sub.textContent = 'Toca aquí o en ⚙️ para configurar';
+        if (icon) icon.textContent = '⚠️';
+      }
+    }
+
+    // Inicializar estado visual al cargar
+    updateSettingsStatusUI();
 
     function isModelQuotaExhausted(modelId, key) {
       try {
@@ -1893,8 +2149,12 @@
 
     async function analyzeTicket() {
       vibrate();
-      const apiKey = $('api-key-input').value.trim();
-      if (!apiKey) { showError('upload-error', 'Por favor ingresa tu clave API de Gemini.'); return; }
+      const apiKey = $('api-key-input').value.trim() || localStorage.getItem('gemini_api_key');
+      if (!apiKey) {
+        showError('upload-error', 'Por favor ingresa tu clave API de Gemini en Ajustes ⚙️ para continuar.');
+        openSettingsModal();
+        return;
+      }
       if (!imageBase64) { showError('upload-error', 'Por favor toma o sube una foto del ticket primero.'); return; }
       clearError('upload-error');
       localStorage.setItem('gemini_api_key', apiKey);

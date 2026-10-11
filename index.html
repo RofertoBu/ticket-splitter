@@ -657,6 +657,209 @@
       flex-shrink: 0;
     }
 
+    /* ── STEP 3: Assign Header & View Switch ── */
+    .step3-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .view-switch-wrap {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .view-switch-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+    }
+
+    .view-switch-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(124, 109, 250, 0.4);
+    }
+
+    /* ── Modo Tarjetas (Mobile-First, Cero Scroll Lateral) ── */
+    .assign-cards-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .assign-card-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      transition: border-color 0.2s ease;
+    }
+
+    .assign-card-item:hover {
+      border-color: rgba(124, 109, 250, 0.4);
+    }
+
+    .assign-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .assign-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .assign-card-price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent2);
+      white-space: nowrap;
+    }
+
+    .assign-card-subbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .assign-card-sub-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-quick-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-quick-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-quick-chip:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    /* Chips de personas (Modo Partes Iguales) */
+    .person-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .person-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px 6px 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+
+    .person-chip-btn:active {
+      transform: scale(0.96);
+    }
+
+    .person-chip-btn.selected {
+      background: rgba(124, 109, 250, 0.18);
+      border-color: var(--accent);
+      color: var(--text);
+      box-shadow: 0 2px 10px rgba(124, 109, 250, 0.25);
+    }
+
+    .p-badge-mini {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .chip-check-icon {
+      font-size: 0.85rem;
+      color: var(--accent2);
+      font-weight: 800;
+      margin-left: 2px;
+    }
+
+    /* Lista vertical de unidades (Modo Por Unidades) */
+    .person-units-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .person-unit-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+    }
+
+    .person-unit-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
     /* ── STEP 3: Assign step table ── */
     .assign-table-wrap {
       overflow-x: auto;
@@ -1242,10 +1445,23 @@
 
   <!-- ══════════════ STEP 3: Assign ══════════════ -->
   <div class="card hidden" id="step-3">
-    <div class="card-title">Asignar Artículos</div>
-    <div class="card-subtitle">Para cada artículo elige si repartirlo <strong>a partes iguales</strong> (marcando personas) o <strong>por unidades enteras</strong> (con cantidades individuales).</div>
+    <div class="step3-header-row">
+      <div>
+        <div class="card-title">Asignar Artículos</div>
+        <div class="card-subtitle">Asigna a quién corresponde cada gasto tocando las personas.</div>
+      </div>
+      <!-- Selector de vista en la esquina superior -->
+      <div class="view-switch-wrap">
+        <button type="button" class="view-switch-btn active" id="btn-view-cards" title="Modo tarjetas vertical (cómodo en móvil)">📱 Tarjetas</button>
+        <button type="button" class="view-switch-btn" id="btn-view-table" title="Modo tabla cuadrícula (completo)">📊 Tabla</button>
+      </div>
+    </div>
 
-    <div class="assign-table-wrap">
+    <!-- Contenedor Modo Tarjetas (Mobile-first, sin scroll horizontal) -->
+    <div class="assign-cards-wrap" id="assign-cards-wrap"></div>
+
+    <!-- Contenedor Modo Tabla (Cuadrícula clásica) -->
+    <div class="assign-table-wrap hidden" id="assign-table-wrap">
       <table class="assign-table" id="assign-table"></table>
     </div>
 
@@ -1827,14 +2043,29 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
       showStep(3);
     });
 
-    // ─── STEP 3: Assign Items (Equal Split vs Individual Units) ───────────────
+    // ─── STEP 3: Assign Items (Cards View & Table View) ─────────────────────
+    let currentAssignView = localStorage.getItem('assign_view') || 'cards';
+
+    $('btn-view-cards').addEventListener('click', () => {
+      vibrate();
+      currentAssignView = 'cards';
+      localStorage.setItem('assign_view', 'cards');
+      renderAssignView();
+    });
+
+    $('btn-view-table').addEventListener('click', () => {
+      vibrate();
+      currentAssignView = 'table';
+      localStorage.setItem('assign_view', 'table');
+      renderAssignView();
+    });
+
     function buildAssignStep() {
       const newAssignments = {};
       items.forEach((it, i) => {
         newAssignments[i] = {};
         const itQty = Math.max(1, parseInt(it.qty, 10) || 1);
 
-        // Default mode: if qty == 1, equal. If qty > 1, start in 'units' unless user chose 'equal'
         if (!itemModes[i]) {
           itemModes[i] = itQty === 1 ? 'equal' : 'units';
         }
@@ -1844,13 +2075,233 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
           if (assignments[i] && assignments[i][pi] !== undefined) {
             newAssignments[i][pi] = assignments[i][pi];
           } else {
-            // Default check/value: in equal mode, start with all checked (1). In units mode, start at 0
             newAssignments[i][pi] = mode === 'equal' ? 1 : 0;
           }
         });
       });
       assignments = newAssignments;
+      renderAssignView();
+    }
 
+    function renderAssignView() {
+      if (currentAssignView === 'cards') {
+        $('assign-cards-wrap').classList.remove('hidden');
+        $('assign-table-wrap').classList.add('hidden');
+        $('btn-view-cards').classList.add('active');
+        $('btn-view-table').classList.remove('active');
+        buildCardsView();
+      } else {
+        $('assign-cards-wrap').classList.add('hidden');
+        $('assign-table-wrap').classList.remove('hidden');
+        $('btn-view-cards').classList.remove('active');
+        $('btn-view-table').classList.add('active');
+        buildTableView();
+      }
+    }
+
+    // ─── VISTA TARJETAS (Mobile-First, sin scroll horizontal) ────────────────
+    function buildCardsView() {
+      const container = $('assign-cards-wrap');
+      container.innerHTML = '';
+
+      items.forEach((it, i) => {
+        const itQty = Math.max(1, parseInt(it.qty, 10) || 1);
+        const itPrice = parseFloat(it.price) || 0;
+        const unitPrice = itPrice / itQty;
+        const mode = itemModes[i] || (itQty === 1 ? 'equal' : 'units');
+
+        const card = document.createElement('div');
+        card.className = 'assign-card-item';
+        card.id = `card-item-${i}`;
+
+        let html = `
+          <div class="assign-card-top">
+            <div>
+              <div class="assign-card-title">${escHtml(it.name)}</div>
+              <div class="badge-units" style="margin-top:2px;">
+                ${itQty} ${itQty > 1 ? 'unidades' : 'unidad'} · ${fmt(unitPrice)} c/u
+              </div>
+            </div>
+            <div class="assign-card-price">${fmt(itPrice)}</div>
+          </div>
+
+          <div class="assign-card-subbar">
+            <div class="assign-card-sub-left">
+              ${itQty > 1 ? `
+                <button type="button" class="btn-mode-toggle ${mode === 'equal' ? 'mode-equal' : 'mode-units'}" data-item="${i}">
+                  ${mode === 'equal' ? '👥 A partes iguales' : '🔢 Por unidades'}
+                </button>
+              ` : ''}
+              <span class="assign-status-pill" id="card-status-pill-${i}"></span>
+            </div>
+            ${mode === 'equal' ? `
+              <div class="card-quick-actions">
+                <button type="button" class="btn-quick-chip" data-action="all" data-item="${i}">Todos</button>
+                <button type="button" class="btn-quick-chip" data-action="none" data-item="${i}">Nadie</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        if (mode === 'equal') {
+          // Chips táctiles para marcar con 1 toque
+          html += `<div class="person-chips-container">`;
+          participants.forEach((p, pi) => {
+            const isChecked = (assignments[i][pi] || 0) > 0;
+            const colorClass = COLORS[pi % COLORS.length];
+            html += `
+              <button type="button" class="person-chip-btn ${isChecked ? 'selected' : ''}" data-item="${i}" data-pi="${pi}">
+                <div class="p-badge-mini ${colorClass}">${INITIALS(p.name)}</div>
+                <span class="chip-name">${escHtml(p.name)}</span>
+                <span class="chip-check-icon">${isChecked ? '✓' : '+'}</span>
+              </button>
+            `;
+          });
+          html += `</div>`;
+        } else {
+          // Lista vertical de unidades
+          html += `<div class="person-units-container">`;
+          participants.forEach((p, pi) => {
+            const count = assignments[i][pi] || 0;
+            const colorClass = COLORS[pi % COLORS.length];
+            html += `
+              <div class="person-unit-item">
+                <div class="person-unit-identity">
+                  <div class="p-badge-mini ${colorClass}">${INITIALS(p.name)}</div>
+                  <span>${escHtml(p.name)}</span>
+                </div>
+                <div class="qty-stepper">
+                  <button type="button" class="stepper-btn minus" data-item="${i}" data-pi="${pi}">−</button>
+                  <span class="stepper-val" id="card-step-val-${i}-${pi}">${count}</span>
+                  <button type="button" class="stepper-btn plus" data-item="${i}" data-pi="${pi}">+</button>
+                </div>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        card.innerHTML = html;
+        container.appendChild(card);
+        updateCardAssignBadge(i);
+      });
+
+      // Eventos Chips (Partes iguales)
+      container.querySelectorAll('.person-chip-btn').forEach(chip => {
+        chip.addEventListener('click', () => {
+          vibrate();
+          const ii = parseInt(chip.dataset.item, 10);
+          const pi = parseInt(chip.dataset.pi, 10);
+          const isSelected = (assignments[ii][pi] || 0) > 0;
+          assignments[ii][pi] = isSelected ? 0 : 1;
+          chip.classList.toggle('selected', !isSelected);
+          chip.querySelector('.chip-check-icon').textContent = !isSelected ? '✓' : '+';
+          updateCardAssignBadge(ii);
+        });
+      });
+
+      // Eventos "Todos" / "Nadie"
+      container.querySelectorAll('.btn-quick-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          vibrate();
+          const ii = parseInt(btn.dataset.item, 10);
+          const action = btn.dataset.action;
+          participants.forEach((_, pi) => {
+            assignments[ii][pi] = action === 'all' ? 1 : 0;
+          });
+          const card = $(`card-item-${ii}`);
+          card.querySelectorAll('.person-chip-btn').forEach(chip => {
+            const isAll = action === 'all';
+            chip.classList.toggle('selected', isAll);
+            chip.querySelector('.chip-check-icon').textContent = isAll ? '✓' : '+';
+          });
+          updateCardAssignBadge(ii);
+        });
+      });
+
+      // Eventos Steppers en Tarjetas (Unidades)
+      container.querySelectorAll('.stepper-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          vibrate();
+          const ii = parseInt(btn.dataset.item, 10);
+          const pi = parseInt(btn.dataset.pi, 10);
+          const isPlus = btn.classList.contains('plus');
+          let current = assignments[ii][pi] || 0;
+          current = isPlus ? current + 1 : Math.max(0, current - 1);
+          assignments[ii][pi] = current;
+          const valEl = $(`card-step-val-${ii}-${pi}`);
+          if (valEl) valEl.textContent = current;
+          updateCardAssignBadge(ii);
+        });
+      });
+
+      // Eventos Alternar Modo en Tarjetas
+      container.querySelectorAll('.btn-mode-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          vibrate();
+          const ii = parseInt(btn.dataset.item, 10);
+          const currentMode = itemModes[ii] || 'units';
+          itemModes[ii] = currentMode === 'equal' ? 'units' : 'equal';
+
+          if (itemModes[ii] === 'equal') {
+            let hasAny = participants.some((_, pi) => (assignments[ii][pi] || 0) > 0);
+            participants.forEach((_, pi) => {
+              assignments[ii][pi] = hasAny ? ((assignments[ii][pi] || 0) > 0 ? 1 : 0) : 1;
+            });
+          } else {
+            participants.forEach((_, pi) => {
+              assignments[ii][pi] = Math.max(0, assignments[ii][pi] || 0);
+            });
+          }
+          buildCardsView();
+        });
+      });
+    }
+
+    function updateCardAssignBadge(i) {
+      const pill = $(`card-status-pill-${i}`);
+      if (!pill) return;
+      const itQty = items[i]?.qty || 1;
+      const mode = itemModes[i] || (itQty === 1 ? 'equal' : 'units');
+      const itPrice = parseFloat(items[i]?.price) || 0;
+
+      pill.className = 'assign-status-pill';
+
+      if (mode === 'equal') {
+        let totalChecked = 0;
+        participants.forEach((_, pi) => {
+          if ((assignments[i]?.[pi] || 0) > 0) totalChecked++;
+        });
+
+        if (totalChecked > 0) {
+          pill.classList.add('status-ok');
+          const share = itPrice / totalChecked;
+          pill.textContent = `✓ ${totalChecked} pers. (${fmt(share)} c/u)`;
+        } else {
+          pill.classList.add('status-err');
+          pill.textContent = `Sin asignar`;
+        }
+      } else {
+        let totalAssigned = 0;
+        participants.forEach((_, pi) => {
+          totalAssigned += (assignments[i]?.[pi] || 0);
+        });
+
+        if (totalAssigned === itQty) {
+          pill.classList.add('status-ok');
+          pill.textContent = `✓ ${totalAssigned}/${itQty} asignadas`;
+        } else if (totalAssigned < itQty) {
+          pill.classList.add('status-warn');
+          pill.textContent = `${totalAssigned}/${itQty} (faltan ${itQty - totalAssigned})`;
+        } else {
+          pill.classList.add('status-err');
+          pill.textContent = `⚠️ ${totalAssigned}/${itQty} (+${totalAssigned - itQty})`;
+        }
+      }
+    }
+
+    // ─── VISTA TABLA (Cuadrícula Clásica) ────────────────────────────────────
+    function buildTableView() {
       const table = $('assign-table');
       table.innerHTML = '';
 
@@ -1885,7 +2336,6 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
         const unitPrice = (parseFloat(it.price) || 0) / itQty;
         const mode = itemModes[i];
 
-        // Item column with mode switch
         let itemColHtml = `
           <td class="col-item">
             <div class="item-title-text">${escHtml(it.name)}</div>
@@ -1897,15 +2347,13 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
                 </button>
               ` : ''}
             </div>
-            <div class="assign-status-pill" id="status-pill-${i}"></div>
+            <div class="assign-status-pill" id="table-status-pill-${i}"></div>
           </td>
           <td class="col-price">${fmt(it.price)}</td>
         `;
 
-        // Participant columns
         participants.forEach((_, pi) => {
           if (mode === 'equal') {
-            // Checkbox for equal splitting (both for single items and shared multi-items like 2 drinks among 3 people)
             const isChecked = (assignments[i][pi] || 0) > 0;
             itemColHtml += `
               <td class="check-cell">
@@ -1913,13 +2361,12 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
               </td>
             `;
           } else {
-            // Stepper for individual unit count assignment (e.g. 3 beers for me, 1 for friend)
             const count = assignments[i][pi] || 0;
             itemColHtml += `
               <td class="check-cell">
                 <div class="qty-stepper">
                   <button type="button" class="stepper-btn minus" data-item="${i}" data-pi="${pi}">−</button>
-                  <span class="stepper-val" id="step-val-${i}-${pi}">${count}</span>
+                  <span class="stepper-val" id="table-step-val-${i}-${pi}">${count}</span>
                   <button type="button" class="stepper-btn plus" data-item="${i}" data-pi="${pi}">+</button>
                 </div>
               </td>
@@ -1933,10 +2380,8 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
 
       table.appendChild(tbody);
 
-      // Update status badges for all rows
-      items.forEach((_, i) => updateItemAssignBadge(i));
+      items.forEach((_, i) => updateTableAssignBadge(i));
 
-      // Toggle mode button (Equal split <-> Units)
       table.querySelectorAll('.btn-mode-toggle').forEach(btn => {
         btn.addEventListener('click', () => {
           vibrate();
@@ -1945,33 +2390,29 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
           itemModes[ii] = currentMode === 'equal' ? 'units' : 'equal';
 
           if (itemModes[ii] === 'equal') {
-            // Check all participants by default or those who had > 0
             let hasAny = participants.some((_, pi) => (assignments[ii][pi] || 0) > 0);
             participants.forEach((_, pi) => {
               assignments[ii][pi] = hasAny ? ((assignments[ii][pi] || 0) > 0 ? 1 : 0) : 1;
             });
           } else {
-            // Reset to units count
             participants.forEach((_, pi) => {
               assignments[ii][pi] = Math.max(0, assignments[ii][pi] || 0);
             });
           }
-          buildAssignStep();
+          buildTableView();
         });
       });
 
-      // Event handlers: Checkboxes (equal mode)
       table.querySelectorAll('.item-cb').forEach(cb => {
         cb.addEventListener('change', () => {
           vibrate();
           const ii = parseInt(cb.dataset.item, 10);
           const pi = parseInt(cb.dataset.pi, 10);
           assignments[ii][pi] = cb.checked ? 1 : 0;
-          updateItemAssignBadge(ii);
+          updateTableAssignBadge(ii);
         });
       });
 
-      // Event handlers: Steppers (units mode)
       table.querySelectorAll('.stepper-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           vibrate();
@@ -1979,18 +2420,13 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
           const pi = parseInt(btn.dataset.pi, 10);
           const isPlus = btn.classList.contains('plus');
           let current = assignments[ii][pi] || 0;
-          if (isPlus) {
-            current++;
-          } else {
-            current = Math.max(0, current - 1);
-          }
+          current = isPlus ? current + 1 : Math.max(0, current - 1);
           assignments[ii][pi] = current;
-          $(`step-val-${ii}-${pi}`).textContent = current;
-          updateItemAssignBadge(ii);
+          $(`table-step-val-${ii}-${pi}`).textContent = current;
+          updateTableAssignBadge(ii);
         });
       });
 
-      // Event handlers: Select-all for equal mode checkboxes
       table.querySelectorAll('.sel-all-cb').forEach(cb => {
         cb.addEventListener('change', () => {
           vibrate();
@@ -1999,14 +2435,14 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
             itemCb.checked = cb.checked;
             const ii = parseInt(itemCb.dataset.item, 10);
             assignments[ii][pi] = cb.checked ? 1 : 0;
-            updateItemAssignBadge(ii);
+            updateTableAssignBadge(ii);
           });
         });
       });
     }
 
-    function updateItemAssignBadge(i) {
-      const pill = $(`status-pill-${i}`);
+    function updateTableAssignBadge(i) {
+      const pill = $(`table-status-pill-${i}`);
       if (!pill) return;
       const itQty = items[i]?.qty || 1;
       const mode = itemModes[i] || (itQty === 1 ? 'equal' : 'units');

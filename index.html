@@ -596,10 +596,35 @@
       transition: all 0.2s;
     }
 
-    .add-row-btn:hover {
-      border-color: var(--accent);
-      background: rgba(124, 109, 250, 0.12);
+    .step1-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .add-ticket-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       color: #fff;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(124, 109, 250, 0.3), rgba(232, 121, 249, 0.3));
+      border: 1px solid rgba(124, 109, 250, 0.55);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      width: 100%;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .add-ticket-btn:hover {
+      background: linear-gradient(135deg, rgba(124, 109, 250, 0.45), rgba(232, 121, 249, 0.45));
+      border-color: var(--accent2);
+      transform: translateY(-1px);
     }
 
     /* ── STEP 2: Participants ── */
@@ -1079,6 +1104,10 @@
         grid-template-columns: 1fr;
       }
 
+      .step1-actions-grid {
+        grid-template-columns: 1fr;
+      }
+
       .item-row {
         gap: 6px;
         padding: 8px;
@@ -1180,7 +1209,14 @@
     </div>
 
     <div class="items-list" id="items-list"></div>
-    <button type="button" class="add-row-btn" id="add-item-btn">+ Añadir artículo</button>
+    <div class="step1-actions-grid">
+      <button type="button" class="add-row-btn" id="add-item-btn">+ Añadir manual</button>
+      <button type="button" class="add-ticket-btn" id="btn-add-ticket">📸 + Añadir otro ticket</button>
+    </div>
+
+    <!-- Hidden file inputs for adding another ticket -->
+    <input type="file" id="append-camera-input" accept="image/*" capture="environment" style="display:none;" />
+    <input type="file" id="append-gallery-input" accept="image/*" style="display:none;" />
 
     <div class="error-banner" id="items-error"></div>
     <div class="btn-row">
@@ -1260,6 +1296,30 @@
         <button type="button" class="btn btn-ghost" id="modal-btn-cancel">Cancelar</button>
         <button type="button" class="btn btn-danger-action" id="modal-btn-confirm">Sí, salir</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal para elegir fuente del segundo ticket -->
+  <div class="modal-overlay hidden" id="append-ticket-modal">
+    <div class="modal-card">
+      <div class="modal-icon">🧾</div>
+      <div class="modal-title">Añadir otro ticket</div>
+      <div class="modal-desc">
+        Toma una foto o sube la imagen de otro ticket (ej. Supermercado Chino, Mercadona...). Sus artículos se sumarán a la cuenta actual.
+      </div>
+      <div class="upload-options-grid" style="margin-bottom:14px;">
+        <button type="button" class="upload-choice-btn" id="btn-append-camera">
+          <span class="upload-choice-icon">📷</span>
+          <span class="upload-choice-title">Cámara</span>
+          <span class="upload-choice-sub">Tomar foto</span>
+        </button>
+        <button type="button" class="upload-choice-btn" id="btn-append-gallery">
+          <span class="upload-choice-icon">🖼️</span>
+          <span class="upload-choice-title">Galería</span>
+          <span class="upload-choice-sub">Subir foto</span>
+        </button>
+      </div>
+      <button type="button" class="btn btn-ghost" id="btn-append-cancel" style="width:100%;">Cancelar</button>
     </div>
   </div>
 
@@ -1418,18 +1478,22 @@
       await callGemini(apiKey);
     }
 
-    async function callGemini(apiKey, attempt = 1) {
+    async function callGemini(apiKey, attempt = 1, append = false, customBase64 = null, customMime = null) {
       showStep('loading');
       $('spinner-text').textContent = attempt > 1
         ? `Reintentando lectura… (intento ${attempt})`
-        : 'Leyendo tu ticket con Inteligencia Artificial…';
+        : (append ? 'Leyendo nuevo ticket con IA y sumando artículos…' : 'Leyendo tu ticket con Inteligencia Artificial…');
+
+      const currentBase64 = customBase64 || imageBase64;
+      const currentMime = customMime || imageMime;
 
       const prompt = `You are an expert receipt parser. Look at this receipt image and extract ALL line items with their quantities and prices.
 Return ONLY a valid JSON array, no markdown fences, no explanation.
 Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
-- Include every charged item (food, drinks, services).
+- Include every charged item (food, drinks, ingredients, products).
 - "quantity": integer number of units for this item line (default 1 if not specified).
-- "price": TOTAL price charged for this line item (e.g. if 3 beers cost 2.00 each, price is 6.00).
+- "price": TOTAL price charged for this line item (e.g. if 2 items cost 1.50 each, price is 3.00).
+- MULTILINGUAL & CHINESE SUPERMARKET RECEIPTS: The ticket may contain Chinese characters (Hanzi), Spanish, or bilingual descriptions. If an item is in Chinese, translate or describe it clearly in Spanish alongside the original name (e.g. "Salsa picante Lao Gan Ma / 老干妈", "Fideos ramen / 拉面", "Gyozas / 饺子", "Tofu / 豆腐", "Té verde / 绿茶") so Spanish speakers know what each product is. If an item is bilingual, prefer the clearer Spanish description.
 - Do NOT include totals, subtotals, taxes, tips, change, or payment method as items.
 - Use numbers for prices and quantities.
 - If you cannot read a price, use 0.00.`;
@@ -1444,7 +1508,7 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
               contents: [{
                 parts: [
                   { text: prompt },
-                  { inlineData: { mimeType: imageMime, data: imageBase64 } }
+                  { inlineData: { mimeType: currentMime, data: currentBase64 } }
                 ]
               }],
               generationConfig: { temperature: 0.1 }
@@ -1459,7 +1523,7 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
           if (retryMatch && attempt <= 3) {
             const waitSec = Math.ceil(parseFloat(retryMatch[1])) + 2;
             await countdown(waitSec);
-            return callGemini(apiKey, attempt + 1);
+            return callGemini(apiKey, attempt + 1, append, customBase64, customMime);
           }
           throw new Error(msg);
         }
@@ -1474,17 +1538,24 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
         }
 
         // Sanitize extracted items
-        items = parsed.map(it => ({
+        const newExtractedItems = parsed.map(it => ({
           qty: Math.max(1, parseInt(it.quantity || it.qty, 10) || 1),
           name: String(it.name || 'Artículo').trim(),
           price: parseFloat(it.price) || 0
         }));
 
+        if (append) {
+          syncItemsFromDOM();
+          items.push(...newExtractedItems);
+        } else {
+          items = newExtractedItems;
+        }
+
         buildItemsStep();
         showStep(1);
       } catch (err) {
-        showStep(0);
-        showError('upload-error', '⚠️ ' + err.message);
+        showStep(append ? 1 : 0);
+        showError(append ? 'items-error' : 'upload-error', '⚠️ ' + err.message);
       }
     }
 
@@ -1603,6 +1674,63 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
         rows[rows.length - 1].querySelector('.item-name').focus();
       }
     });
+
+    // ─── Multi-Ticket Handlers ───────────────────────────────────────────────
+    const btnAddTicket = $('btn-add-ticket');
+    const appendModal = $('append-ticket-modal');
+    const appendCameraInput = $('append-camera-input');
+    const appendGalleryInput = $('append-gallery-input');
+    const btnAppendCamera = $('btn-append-camera');
+    const btnAppendGallery = $('btn-append-gallery');
+    const btnAppendCancel = $('btn-append-cancel');
+
+    btnAddTicket.addEventListener('click', () => {
+      vibrate();
+      syncItemsFromDOM();
+      appendModal.classList.remove('hidden');
+    });
+
+    btnAppendCamera.addEventListener('click', () => {
+      vibrate();
+      appendModal.classList.add('hidden');
+      appendCameraInput.click();
+    });
+
+    btnAppendGallery.addEventListener('click', () => {
+      vibrate();
+      appendModal.classList.add('hidden');
+      appendGalleryInput.click();
+    });
+
+    btnAppendCancel.addEventListener('click', () => {
+      vibrate();
+      appendModal.classList.add('hidden');
+    });
+
+    appendCameraInput.addEventListener('change', () => {
+      if (appendCameraInput.files[0]) handleAppendFile(appendCameraInput.files[0]);
+    });
+
+    appendGalleryInput.addEventListener('change', () => {
+      if (appendGalleryInput.files[0]) handleAppendFile(appendGalleryInput.files[0]);
+    });
+
+    async function handleAppendFile(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const apiKey = $('api-key-input').value.trim() || localStorage.getItem('gemini_api_key');
+      if (!apiKey) {
+        showError('items-error', 'Por favor ingresa tu API Key en la pantalla de inicio.');
+        return;
+      }
+      clearError('items-error');
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const appendBase64 = e.target.result.split(',')[1];
+        const appendMime = file.type;
+        await callGemini(apiKey, 1, true, appendBase64, appendMime);
+      };
+      reader.readAsDataURL(file);
+    }
 
     // Botón Atrás en el Paso 1 con confirmación para no perder el ticket
     $('btn-back-0').addEventListener('click', () => {

@@ -657,6 +657,56 @@
       flex-shrink: 0;
     }
 
+    /* ── Personas Frecuentes Guardadas ── */
+    .frequent-p-wrap {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .frequent-p-title {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .frequent-p-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .frequent-chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .frequent-chip-btn:hover {
+      background: rgba(124, 109, 250, 0.2);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .frequent-chip-btn:active {
+      transform: scale(0.96);
+    }
+
     /* ── STEP 3: Assign Header & View Switch ── */
     .step3-header-row {
       display: flex;
@@ -1431,10 +1481,16 @@
   <!-- ══════════════ STEP 2: Participants ══════════════ -->
   <div class="card hidden" id="step-2">
     <div class="card-title">¿Quiénes comparten?</div>
-    <div class="card-subtitle">Escribe los nombres de todas las personas que dividirán la cuenta.</div>
+    <div class="card-subtitle">Escribe los nombres de las personas. Se guardarán automáticamente en tu dispositivo para la próxima vez.</div>
 
     <div class="participants-list" id="participants-list"></div>
     <button type="button" class="add-row-btn" id="add-p-btn">+ Añadir persona</button>
+
+    <!-- Amigos guardados en el dispositivo para añadir con un toque -->
+    <div class="frequent-p-wrap" id="frequent-p-wrap" style="display:none;">
+      <span class="frequent-p-title">Amigos guardados (toca para añadir):</span>
+      <div class="frequent-p-chips" id="frequent-p-chips"></div>
+    </div>
 
     <div class="error-banner" id="p-error"></div>
     <div class="btn-row">
@@ -1974,10 +2030,53 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
       showStep(2);
     });
 
-    // ─── STEP 2: Participants ─────────────────────────────────────────────────
+    // ─── STEP 2: Participants (localStorage persistence) ──────────────────────
+    function getStoredParticipants() {
+      try {
+        const raw = localStorage.getItem('saved_participants');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveStoredParticipants(list) {
+      try {
+        const names = list.map(n => n.trim()).filter(Boolean);
+        localStorage.setItem('saved_participants', JSON.stringify(names));
+      } catch (e) {}
+    }
+
+    function getFrequentPool() {
+      try {
+        const raw = localStorage.getItem('frequent_friends_pool');
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function addToFrequentPool(names) {
+      try {
+        let pool = getFrequentPool();
+        names.forEach(name => {
+          const clean = name.trim();
+          if (clean && !pool.some(p => p.toLowerCase() === clean.toLowerCase())) {
+            pool.push(clean);
+          }
+        });
+        localStorage.setItem('frequent_friends_pool', JSON.stringify(pool));
+      } catch (e) {}
+    }
+
     function buildParticipantsStep() {
       if (participants.length === 0) {
-        participants = [{ name: 'Yo' }, { name: 'Amigo 1' }];
+        const saved = getStoredParticipants();
+        if (saved && Array.isArray(saved) && saved.length > 0) {
+          participants = saved.map(name => ({ name }));
+        } else {
+          participants = [{ name: 'Yo' }, { name: 'Amigo 1' }];
+        }
       }
       renderParticipants();
     }
@@ -1999,6 +2098,7 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
         inp.addEventListener('input', () => {
           participants[i].name = inp.value;
           badge.textContent = inp.value ? INITIALS(inp.value) : (i + 1);
+          renderFrequentChips();
         });
 
         const del = document.createElement('button');
@@ -2015,6 +2115,38 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
         row.append(badge, inp);
         if (participants.length > 1) row.appendChild(del);
         list.appendChild(row);
+      });
+      renderFrequentChips();
+    }
+
+    function renderFrequentChips() {
+      const pool = getFrequentPool();
+      const currentNames = participants.map(p => (p.name || '').trim().toLowerCase());
+      const available = pool.filter(name => !currentNames.includes(name.toLowerCase()));
+
+      const wrap = $('frequent-p-wrap');
+      const container = $('frequent-p-chips');
+
+      if (!wrap || !container) return;
+
+      if (available.length === 0) {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      wrap.style.display = 'block';
+      container.innerHTML = '';
+      available.forEach(name => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'frequent-chip-btn';
+        btn.innerHTML = `<span>+ ${escHtml(name)}</span>`;
+        btn.addEventListener('click', () => {
+          vibrate();
+          participants.push({ name });
+          renderParticipants();
+        });
+        container.appendChild(btn);
       });
     }
 
@@ -2039,6 +2171,12 @@ Format: [{"name": "Item name", "quantity": 1, "price": 0.00}, ...]
         return;
       }
       participants = validParticipants;
+
+      // Persistir automáticamente en localStorage y actualizar amigos frecuentes
+      const names = participants.map(p => p.name);
+      saveStoredParticipants(names);
+      addToFrequentPool(names);
+
       buildAssignStep();
       showStep(3);
     });

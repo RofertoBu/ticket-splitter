@@ -1484,66 +1484,6 @@
       color: var(--text);
     }
 
-    .api-status-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 11px 14px;
-      margin-top: 16px;
-      margin-bottom: 6px;
-      gap: 12px;
-    }
-
-    .api-status-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .api-status-icon {
-      font-size: 1.3rem;
-      flex-shrink: 0;
-    }
-
-    .api-status-title {
-      font-size: 0.86rem;
-      font-weight: 700;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .api-status-sub {
-      font-size: 0.74rem;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .btn-config-pill {
-      background: rgba(124, 109, 250, 0.12);
-      border: 1px solid rgba(124, 109, 250, 0.35);
-      color: var(--accent2);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: all 0.2s;
-    }
-
-    .btn-config-pill:hover {
-      background: rgba(124, 109, 250, 0.25);
-    }
-
     /* ── Color palette for participants ── */
     .color-0 { background: rgba(124, 109, 250, 0.25); color: #a78bfa; }
     .color-1 { background: rgba(52, 211, 153, 0.2); color: #34d399; }
@@ -1652,18 +1592,6 @@
         <span>Foto cargada correctamente</span>
         <button type="button" class="btn-link" id="btn-change-img">Cambiar foto 🔄</button>
       </div>
-    </div>
-
-    <!-- Estado de la clave API & acceso a Ajustes -->
-    <div class="api-status-bar" id="api-status-bar">
-      <div class="api-status-info">
-        <span class="api-status-icon" id="api-status-icon">⚡</span>
-        <div>
-          <div class="api-status-title" id="api-status-title">Modelo: Automático</div>
-          <div class="api-status-sub" id="api-status-sub">Gemini API Key configurada</div>
-        </div>
-      </div>
-      <button type="button" class="btn-config-pill" id="btn-open-settings-step0">Ajustes ⚙️</button>
     </div>
 
     <div class="error-banner" id="upload-error"></div>
@@ -2034,7 +1962,6 @@
     }
 
     $('btn-open-settings').addEventListener('click', openSettingsModal);
-    $('btn-open-settings-step0').addEventListener('click', openSettingsModal);
     $('btn-close-settings').addEventListener('click', closeSettingsModal);
     $('btn-save-settings').addEventListener('click', () => {
       const key = $('api-key-input').value.trim();
@@ -2052,32 +1979,9 @@
 
     function updateSettingsStatusUI() {
       const key = (localStorage.getItem('gemini_api_key') || $('api-key-input')?.value || '').trim();
-      const model = localStorage.getItem('gemini_model') || 'auto';
       const badge = $('settings-badge');
-      const title = $('api-status-title');
-      const sub = $('api-status-sub');
-      const icon = $('api-status-icon');
-
-      const modelNames = {
-        'auto': 'Automático (Cascada)',
-        'gemini-2.5-flash': 'Gemini 2.5 Flash',
-        'gemini-2.0-flash': 'Gemini 2.0 Flash',
-        'gemini-1.5-flash': 'Gemini 1.5 Flash',
-        'gemini-1.5-flash-8b': 'Gemini 1.5 Flash 8B'
-      };
-
-      const modelLabel = modelNames[model] || model;
-
-      if (key) {
-        if (badge) badge.className = 'settings-btn-badge configured';
-        if (title) title.textContent = `Modelo: ${modelLabel}`;
-        if (sub) sub.textContent = 'API Key configurada y lista';
-        if (icon) icon.textContent = '⚡';
-      } else {
-        if (badge) badge.className = 'settings-btn-badge';
-        if (title) title.textContent = 'Sin clave API configurada';
-        if (sub) sub.textContent = 'Toca aquí o en ⚙️ para configurar';
-        if (icon) icon.textContent = '⚠️';
+      if (badge) {
+        badge.className = key ? 'settings-btn-badge configured' : 'settings-btn-badge';
       }
     }
 
